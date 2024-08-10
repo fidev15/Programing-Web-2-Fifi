@@ -26,6 +26,7 @@
         <table class="table table-responsive table-bordered">
             <thead>
                 <tr>
+                    <th>No</th>
                     <th>NIM</th>
                     <th>Nama</th>
                     <th>Email</th>
@@ -35,13 +36,14 @@
             <tbody>
                 @foreach ($mahasiswas as $mahasiswa)
                     <tr>
+                        <td>{{ $index + 1 }}</td>
                         <td>{{ $mahasiswa->nim }}</td>
                         <td>{{ $mahasiswa->nama }}</td>
                         <td>{{ $mahasiswa->email }}</td>
                         <td>
                             <div class="d-flex">
-                                <a href="/edit/{{ $mahasiswa->nim }}" class="btn btn-secondary me-2">Edit</a>
-                                <form action="/delete/{{ $mahasiswa->mahasiswa }}" method="POST" onsubmit="return confirm('yakin hapus data?');">
+                                <a href="{{ route('edit', $mahasiswa->id) }}" class="btn btn-secondary me-2">Edit</a>
+                                <form action="{{ route('delete', $mahasiswa->id) }}" method="POST" onsubmit="return confirm('Apa yakin data ini akan dihapus?');">
                                     @csrf
                                     @method('DELETE')
                                     <input type="submit" class="btn btn-danger" value="Hapus">

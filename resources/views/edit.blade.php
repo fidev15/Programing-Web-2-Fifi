@@ -31,32 +31,37 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container mt-4">
         <div class="form-container">
-            <h2 class="mb-4">Edit Data Mahasiswa</h2>
-            <form action="/update/{{ $mahasiswa->nim }}" method="POST">
+            <h2 class="text-center mb-4">Edit Mahasiswa</h2>
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            <form action="{{ route('update', $mahasiswa->id) }}" method="POST">
                 @csrf
                 @method('PUT')
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="mb-3">
-                            <label for="nim" class="form-label">NIM</label>
-                            <input type="number" class="form-control" id="nim" name="nim" value="{{ $mahasiswa->nim }}" min="1" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="nama" class="form-label">Nama</label>
-                            <input type="text" class="form-control" id="nama" name="nama" value="{{ $mahasiswa->nama }}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="text" class="form-control" id="email" name="email" value="{{ $mahasiswa->email }}" required>
-                        </div>
-                    </div>
+                <div class="form-group mb-3">
+                    <label for="nim">NIM</label>
+                    <input type="text" class="form-control" id="nim" name="nim" value="{{ $mahasiswa->nim }}">
+                </div>
+                <div class="form-group mb-3">
+                    <label for="nama">Nama</label>
+                    <input type="text" class="form-control" id="nama" name="nama" value="{{ $mahasiswa->nama }}" >
+                </div>
+                <div class="form-group mb-3">
+                    <label for="email">Alamat</label>
+                    <input type="text" class="form-control" id="email" name="email" value="{{ $mahasiswa->email }}" >
                 </div>
                 <div class="d-flex justify-content-between">
-                <a href="/" class="btn btn-secondary btn-custom">Kembali</a>
-                    <button type="submit" class="btn btn-primary btn-custom">Simpan</button>
-                    
+                    <a href="/mahasiswas" class="btn btn-secondary btn-custom">Kembali</a>
+                    <button type="submit" class="btn btn-primary btn-custom">Update</button>
                 </div>
             </form>
         </div>

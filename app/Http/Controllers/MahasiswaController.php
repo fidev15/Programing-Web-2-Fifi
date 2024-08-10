@@ -22,15 +22,23 @@ class MahasiswaController extends Controller
 
     public function store(Request $request)
     {
-        Mahasiswa::create([
-            'nim' => $request->nim, // Added this line to handle id_barang
-            'nama' => $request->nama,
-            'email' => $request->email,
+        $request->validate([
+            'nama' => 'required|max:50',
+            'nim' => 'required|size:10|unique:mahasiswas,nim',
+            'alamat' => 'required',
         ]);
+
+        Mahasiswa::create($request->all());
+        return redirect()->route('mahasiswa')
+            ->with('success', 'Data Mahasiswa Telah Berhasil Ditambahkan.');
 
         session()->flash('success', 'Data Mahasiswa baru berhasil ditambahkan!');
 
         return redirect('/');
+    }
+    public function show(Mahasiswa $mahasiswa)
+    {
+        return view('show', compact('mahasiswa'));
     }
 
     public function edit(Mahasiswa $mahasiswa)
@@ -40,15 +48,15 @@ class MahasiswaController extends Controller
 
     public function update(Request $request, Mahasiswa $mahasiswa)
     {
-        $mahasiswa->update([
-            'nim' => $request->nim, // Added this line to handle id_barang
-            'nama' => $request->nama,
-            'email' => $request->email,
+        $request->validate([
+            'nama' => 'required|max:50',
+            'nim' => 'required|size:10|unique:mahasiswas,nim,' . $mahasiswa->id,
+            'alamat' => 'required',
         ]);
-    
-        session()->flash('success', 'Data Mahasiswa berhasil diubah!');
-    
-        return redirect('/');
+
+        $mahasiswa->update($request->all());
+        return redirect()->route('mahasiswa')
+            ->with('success', 'Data Mahasiswa Telah Berhasil Dirubah.');
     }
 
     public function delete(Mahasiswa $mahasiswa)
