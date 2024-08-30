@@ -1,59 +1,49 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layouts')
 
-    <title>Laravel</title>
+@section('title')
+Data Mahasiswa
+@endsection
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
+@section('heading')
+Data Mahasiswa
+@endsection
 
-    <!-- Styles -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-</head>
-<body class="container">
-    @if (session('success'))
-        <div class="alert alert-success mt-4">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <div class="mt-4">
-        <h2>Data Mahasiswa</h2>
-        <a href="/create" class="btn btn-primary mb-2">Tambah Data</a>
-        <table class="table table-responsive table-bordered">
+@section('content')
+<div class="card-header py-3">
+    <a href="{{ route('tambah-mahasiswa') }}" class="btn btn-primary">Tambah Data</a>
+</div>
+<div class="card-body">
+    <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
                 <tr>
-                    <th>No</th>
+                    <th>#</th>
                     <th>NIM</th>
                     <th>Nama</th>
-                    <th>Email</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($mahasiswas as $mahasiswa)
+                @php
+                    $i = 1;
+                @endphp
+                @foreach ($mahasiswa as $item)
                     <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $mahasiswa->nim }}</td>
-                        <td>{{ $mahasiswa->nama }}</td>
-                        <td>{{ $mahasiswa->email }}</td>
+                        <td>{{ $i++ }}</td>
+                        <td>{{ $item->nim }}</td>
+                        <td>{{ $item->nama }}</td>
                         <td>
-                            <div class="d-flex">
-                                <a href="{{ route('edit', $mahasiswa->id) }}" class="btn btn-secondary me-2">Edit</a>
-                                <form action="{{ route('delete', $mahasiswa->id) }}" method="POST" onsubmit="return confirm('Apa yakin data ini akan dihapus?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <input type="submit" class="btn btn-danger" value="Hapus">
-                                </form>
-                            </div>
+                            <a href="{{ route('edit-mahasiswa', ['nim' => $item->nim]) }}" class="btn btn-success">Edit</a>
+                            <a href="#" class="btn btn-danger" onclick="document.getElementById('delete-form').submit();">Hapus</a>
+                            <form id="delete-form" action="{{ route('hapus-mahasiswa', ['nim' => $item->nim]) }}" method="post">
+                                @csrf
+                                @method("DELETE")
+                            </form>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
-</body>
-</html>
+</div>
+@endsection
