@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mahasiswa;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class MahasiswaController extends Controller
@@ -17,55 +16,67 @@ class MahasiswaController extends Controller
 
     public function create()
     {
-        return view('create');
+        return view('tambah-mahasiswa');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required|max:50',
-            'nim' => 'required|size:10|unique:mahasiswas,nim',
-            'alamat' => 'required',
+            'nim' => 'required|size:10',
+            'nama' => 'required|max:50'
+        ], [
+            'nim.required' => 'kolom ini harus diisi ya',
+            'nim.size' => 'kolom nim harus berukuran :size karakter',
+            'nama.required' => 'kolom ini harus diisi ya',
+            'nama.max' => 'kolom nama maksimal berukuran :max karakter'
         ]);
 
-        Mahasiswa::create($request->all());
-        return redirect()->route('mahasiswa')
-            ->with('success', 'Data Mahasiswa Telah Berhasil Ditambahkan.');
+        $nim = $request->nim;
+        $nama = $request->nama;
 
-        session()->flash('success', 'Data Mahasiswa baru berhasil ditambahkan!');
+        $store = Mahasiswa::create(['nim' => $nim, 'nama' => $nama]);
 
-        return redirect('/');
+        if ($store) {
+            return redirect()->route('list-mahasiswa');
+        } else {
+            return redirect()->back();
+        }
     }
-    public function show(Mahasiswa $mahasiswa)
+
+    public function edit($nim)
     {
-        return view('show', compact('mahasiswa'));
+        $mahasiswa = Mahasiswa::where('nim', $nim)->first();
+        return view('edit-mahasiswa', ['mahasiswa' => $mahasiswa]);
     }
 
-    public function edit(Mahasiswa $mahasiswa)
-    {
-        return view('edit', compact('mahasiswa'));
-    }
-
-    public function update(Request $request, Mahasiswa $mahasiswa)
+    public function update(Request $request, $nim)
     {
         $request->validate([
-            'nama' => 'required|max:50',
-            'nim' => 'required|size:10|unique:mahasiswas,nim,' . $mahasiswa->id,
-            'alamat' => 'required',
+            'nama' => 'required|max:50'
+        ], [
+            'nama.required' => 'kolom ini harus diisi ya',
+            'nama.max' => 'kolom nama maksimal berukuran :max karakter'
         ]);
 
-        $mahasiswa->update($request->all());
-        return redirect()->route('mahasiswa')
-            ->with('success', 'Data Mahasiswa Telah Berhasil Dirubah.');
+        $mahasiswa = Mahasiswa::where('nim', $nim)->first();
+        $update = $mahasiswa->update(['nama' => $request->nama]);
+
+        if ($update) {
+            return redirect()->route('list-mahasiswa');
+        } else {
+            return redirect()->back();
+        }
     }
 
-    public function delete(Mahasiswa $mahasiswa)
+    public function delete($nim)
     {
-        $mahasiswa->delete();
-    
-        session()->flash('success', 'Data Mahasiswa berhasil dihapus!');
-    
-        return redirect('/');
+        $mahasiswa = Mahasiswa::where('nim', $nim);
+        $delete = $mahasiswa->delete();
+
+        if ($delete) {
+            return redirect()->route('list-mahasiswa');
+        } else {
+            return redirect()->back();
+        }
     }
 }
-
